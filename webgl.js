@@ -101,6 +101,8 @@ const gl = canvas.getContext('webgl')
 const drawline = document.getElementById("drawline")
 const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
+const colorpicker = document.getElementById("colorpicker")
+
 
 squaresize.onchange = (ev) => {
     square_size = ev.target.value
@@ -118,6 +120,17 @@ drawsquare.onclick = () => {
     drawsquare.disabled = true 
 
     state.type = 'drawsquare' 
+}
+
+colorpicker.onchange = () => {
+    var colorCode = colorpicker.value;
+    var rgb = hexToRgb(colorpicker.value);
+
+    for(var i=0;i < listOfItems[4].count; i++){
+        listOfItems[4].coordinates[i*5 + 2] = rgb.r;
+        listOfItems[4].coordinates[i*5 + 3] = rgb.g;
+        listOfItems[4].coordinates[i*5 + 4] = rgb.b;
+    }
 }
 
 canvas.onmouseup = (ev) => {
@@ -166,6 +179,10 @@ canvas.onmouseup = (ev) => {
         state.type = 'none'
         state.payload = {}
         drawsquare.disabled = false
+    }else{
+        // cek apakah berada di dalam suatu poligon
+
+        // habis itu ganti warna nya
     }
 
     listOfItems.push({
