@@ -136,9 +136,6 @@ colorpicker.onchange = () => {
 canvas.onmouseup = (ev) => {
     const coordinate = transformClick(ev) 
 
-    console.log(coordinate.x)
-    console.log(coordinate.y)
-
     if(state.type == 'drawline') {
         if(state.payload.current == 0) {
             listOfItems.push({
@@ -182,6 +179,14 @@ canvas.onmouseup = (ev) => {
     }else{
         // cek apakah berada di dalam suatu poligon
 
+        var listOfPolygons = listOfItems.filter(item => item.type === 'polygon')
+        listOfPolygons = listOfPolygons.map(item => {
+            return mapToPoint(item.coordinates, item.count)
+        })
+
+        listOfPolygons.forEach(polygon => {
+            isInside(polygon, coordinate) ? console.log('true') : console.log('false')
+        })
         // habis itu ganti warna nya
     }
 

@@ -64,27 +64,31 @@ function doIntersect(p1, q1, p2, q2)
     return false;  
 } 
 
-function isInside(polygon, n, p) 
+function isInside(polygon, p) 
 { 
+    var n = polygon.length;
+
     if (n < 3) return false; 
+    var INF = 10000;
 
     var extreme = {
         x: INF, 
         y: p.y
     }; 
-  
+    
     var count = 0, i = 0; 
     do
     { 
         var next = (i+1)%n; 
+        var isIntersect = doIntersect(polygon[i], polygon[next], p, extreme)
 
-        if (doIntersect(polygon[i], polygon[next], p, extreme)) 
+        if (isIntersect) 
         { 
-
+            
             if (pointOrientation(polygon[i], p, polygon[next]) == 0) {
                 return onSegment(polygon[i], p, polygon[next]); 
             }
-  
+            
             count++; 
         } 
         i = next; 
