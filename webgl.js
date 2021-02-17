@@ -22,6 +22,8 @@ void main()
   gl_FragColor = vec4(fragColor, 1.0);
 }`
 
+var clickedPolygonIndex = -1;
+
 let listOfItems = [
     {
         type: 'point',
@@ -126,10 +128,12 @@ colorpicker.onchange = () => {
     var colorCode = colorpicker.value;
     var rgb = hexToRgb(colorpicker.value);
 
-    for(var i=0;i < listOfItems[4].count; i++){
-        listOfItems[4].coordinates[i*5 + 2] = rgb.r;
-        listOfItems[4].coordinates[i*5 + 3] = rgb.g;
-        listOfItems[4].coordinates[i*5 + 4] = rgb.b;
+    if(clickedPolygonIndex >= 0){
+        for(var i=0;i < listOfItems[clickedPolygonIndex].count; i++){
+            listOfItems[clickedPolygonIndex].coordinates[i*5 + 2] = rgb.r;
+            listOfItems[clickedPolygonIndex].coordinates[i*5 + 3] = rgb.g;
+            listOfItems[clickedPolygonIndex].coordinates[i*5 + 4] = rgb.b;
+        }
     }
 }
 
@@ -177,16 +181,41 @@ canvas.onmouseup = (ev) => {
         state.payload = {}
         drawsquare.disabled = false
     }else{
+        console.log(listOfItems)
         // cek apakah berada di dalam suatu poligon
-
-        var listOfPolygons = listOfItems.filter(item => item.type === 'polygon')
+        var modifiedItems = listOfItems.map((item, idx) => {
+            return {
+                ...item,
+                index: idx
+            }
+        })
+        var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
         listOfPolygons = listOfPolygons.map(item => {
-            return mapToPoint(item.coordinates, item.count)
+            return {
+                points: mapToPoint(item.coordinates, item.count),
+                index: item.index
+            }
+        })
+        console.log(listOfPolygons)
+        var anyInside = false;
+        listOfPolygons.forEach(polygon => {
+            console.log(polygon.index);
+            if(isInside(polygon.points, coordinate)){
+                if(clickedPolygonIndex === polygon.index){
+                    clickedPolygonIndex = -1;
+                }else{
+                    clickedPolygonIndex = polygon.index;
+                }
+
+                anyInside = true;
+            }
         })
 
-        listOfPolygons.forEach(polygon => {
-            isInside(polygon, coordinate) ? console.log('true') : console.log('false')
-        })
+        if(!anyInside){
+            clickedPolygonIndex = -1;
+        }
+        console.log(clickedPolygonIndex);
+        state.type = 'none'
         // habis itu ganti warna nya
     }
 

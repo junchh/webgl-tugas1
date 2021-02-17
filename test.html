@@ -13,15 +13,18 @@
     </style>
 </head>
 <body onload="main()">
-    <input type="color" id="colorpicker" onchange="changeColor()" value="#ff0000" style="width:85%;">
+    
 
     <canvas id="c" width="800" height="600">
         Your browser does not support HTML5
     </canvas>
-    
-    <button id="drawline">draw line</button>
-    <input type="number" id="squaresize" name="squaresize" />
-    <button id="drawsquare">draw square</button>
+    <div>
+        <input type="color" id="colorpicker" onchange="changeColor()" value="#ff0000" style="width:20%;">
+        
+        <button id="drawline">draw line</button>
+        <input type="number" id="squaresize" name="squaresize" />
+        <button id="drawsquare">draw square</button>
+    </div>
     <script src="util.js"></script>
     <script src="webgl.js"></script>
 </body>

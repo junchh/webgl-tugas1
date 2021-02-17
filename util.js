@@ -88,7 +88,7 @@ function isInside(polygon, p)
             if (pointOrientation(polygon[i], p, polygon[next]) == 0) {
                 return onSegment(polygon[i], p, polygon[next]); 
             }
-            
+            console.log('intersect');
             count++; 
         } 
         i = next; 
