@@ -104,7 +104,11 @@ const drawline = document.getElementById("drawline")
 const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
+const save = document.getElementById("save")
 
+save.onclick = () => {
+    saveModel(listOfItems)
+}
 
 squaresize.onchange = (ev) => {
     square_size = ev.target.value

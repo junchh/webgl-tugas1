@@ -108,3 +108,15 @@ function mapToPoint(polygon, count){
 
     return listOfPoint
 }
+
+function saveModel(items){
+    console.log(items);
+    var HTTP = new XMLHttpRequest();
+    const url = "/server.php";
+
+    var data = new FormData();
+    data.append('items', JSON.stringify(items));
+
+    HTTP.open("POST", url, true);
+    HTTP.send(data);
+}

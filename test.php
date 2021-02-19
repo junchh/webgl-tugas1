@@ -1,3 +1,4 @@
+<?php ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,7 @@
         <button id="drawline">draw line</button>
         <input type="number" id="squaresize" name="squaresize" />
         <button id="drawsquare">draw square</button>
+        <button id="save">save model</button>
     </div>
     <script src="util.js"></script>
     <script src="webgl.js"></script>
