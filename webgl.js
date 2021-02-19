@@ -85,8 +85,8 @@ const transformClick = (ev) => {
     let nowX = ev.clientX 
     let nowY = ev.clientY
 
-    nowX = (nowX - 400) / 400
-    nowY = (-1 * (nowY - 400)) / 400 
+    nowX = (nowX - 360) / 360
+    nowY = (-1 * (nowY - 360)) / 360 
     
     return {x: nowX, y: nowY}
 }
@@ -135,6 +135,7 @@ colorpicker.onchange = () => {
             listOfItems[clickedPolygonIndex].coordinates[i*5 + 4] = rgb.b;
         }
     }
+    render(gl, listOfItems)
 }
 
 canvas.onmouseup = (ev) => {
@@ -216,15 +217,9 @@ canvas.onmouseup = (ev) => {
         }
         console.log(clickedPolygonIndex);
         state.type = 'none'
-        // habis itu ganti warna nya
+
     }
 
-    listOfItems.push({
-        type: 'point',
-        coordinates: [
-            coordinate.x, coordinate.y, 0.0, 0.0, 0.0
-        ]
-    })
     render(gl, listOfItems)
 }
 
