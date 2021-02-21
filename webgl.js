@@ -105,6 +105,7 @@ const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
 const save = document.getElementById("save")
+const uploadModel = document.getElementById("uploadModel")
 
 save.onclick = () => {
     saveModel(listOfItems)
@@ -140,6 +141,14 @@ colorpicker.onchange = () => {
         }
     }
     render(gl, listOfItems)
+}
+
+uploadModel.onchange = (e) => {
+    console.log(e.target.files[0]);
+    loadJSON(e.target.files[0].name, (json) => {
+        listOfItems = json;
+        render(gl, listOfItems);
+    })
 }
 
 canvas.onmouseup = (ev) => {

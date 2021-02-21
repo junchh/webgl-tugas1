@@ -120,3 +120,17 @@ function saveModel(items){
     HTTP.open("POST", url, true);
     HTTP.send(data);
 }
+
+function loadJSON(filename, callback) {   
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', filename, true);
+    xobj.onreadystatechange = function () {
+        console.log('yes');
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            console.log('yuhuu');
+            callback(JSON.parse(xobj.responseText));
+        }
+    };
+    xobj.send(null);  
+}
