@@ -27,7 +27,11 @@
         </div>
         <div class="feature">
             <input type="file" id="uploadModel"/>
+        </div>
+        <div class="feature">
             <button class="pure-button" id="save">Save Model</button>
+            <input class="hide" type="text" id="inputName" placeholder="file name" />
+            <button id="saveChanges" class="pure-button hide">Save</button>
         </div>
     </div>
     <script src="util.js"></script>

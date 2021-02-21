@@ -106,10 +106,30 @@ const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
 const save = document.getElementById("save")
 const uploadModel = document.getElementById("uploadModel")
+const saveChanges = document.getElementById("saveChanges");
+const inputName = document.getElementById("inputName");
 
 save.onclick = () => {
-    saveModel(listOfItems)
+    save.classList.add('hide');
+    saveChanges.classList.remove('hide');
+    inputName.classList.remove('hide');
+    // saveModel(listOfItems);
 }
+
+saveChanges.onclick = () => {
+    save.classList.remove('hide');
+    saveChanges.classList.add('hide');
+    inputName.classList.add('hide');
+
+    var name = "model";
+    if(inputName.value !== ''){
+        console.log('override');
+        name = inputName.value;
+        inputName.value = "";
+    }
+    saveModel(name, listOfItems);
+}
+
 
 squaresize.onchange = (ev) => {
     square_size = ev.target.value

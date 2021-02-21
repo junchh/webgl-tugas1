@@ -109,13 +109,14 @@ function mapToPoint(polygon, count){
     return listOfPoint
 }
 
-function saveModel(items){
+function saveModel(name, items){
     console.log(items);
     var HTTP = new XMLHttpRequest();
     const url = "/server.php";
 
     var data = new FormData();
     data.append('items', JSON.stringify(items));
+    data.append('name', name);
 
     HTTP.open("POST", url, true);
     HTTP.send(data);
