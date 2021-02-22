@@ -81,15 +81,7 @@ const render = (gl, objects) => {
     }
 }
 
-const transformClick = (ev) => {
-    let nowX = ev.clientX 
-    let nowY = ev.clientY
 
-    nowX = (nowX - 360) / 360
-    nowY = (-1 * (nowY - 360)) / 360 
-    
-    return {x: nowX, y: nowY}
-}
 
 let square_size = 0
 
@@ -101,6 +93,7 @@ const canvas = document.getElementById('c')
 const gl = canvas.getContext('webgl')
 
 const drawline = document.getElementById("drawline")
+const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
@@ -108,6 +101,19 @@ const save = document.getElementById("save")
 const uploadModel = document.getElementById("uploadModel")
 const saveChanges = document.getElementById("saveChanges");
 const inputName = document.getElementById("inputName");
+
+const transformClick = (ev) => {
+    let nowX = ev.clientX 
+    let nowY = ev.clientY
+
+    const canvasW = canvas.width 
+    const canvasH = canvas.height
+
+    nowX = (nowX - (canvasW / 2)) / (canvasW / 2)
+    nowY = (-1 * (nowY - (canvasH / 2))) / (canvasH / 2)
+    
+    return {x: nowX, y: nowY}
+}
 
 save.onclick = () => {
     save.classList.add('hide');
@@ -137,14 +143,40 @@ squaresize.onchange = (ev) => {
 
 drawline.onclick = () => {
     drawline.disabled = true
+    drawpoly.disabled = true 
+    drawsquare.disabled = true
 
     state.type = 'drawline'
 
     state.payload = {current: 0, pivot: {}}
 }
 
+drawpoly.onclick = () => {
+    if(state.type == 'none') {
+        drawline.disabled = true
+        drawsquare.disabled = true
+        state.type = 'drawpoly'
+
+        state.payload = {current: 0}
+
+        drawpoly.innerHTML = "Stop Drawing Polygon"
+    } else if(state.type == 'drawpoly') {
+        drawpoly.innerHTML = "Draw Polygon"
+
+        drawline.disabled = false
+        drawsquare.disabled = false
+
+        state.type = 'none'
+        state.payload = {}
+    }
+    
+
+}
+
 drawsquare.onclick = () => {
-    drawsquare.disabled = true 
+    drawline.disabled = true
+    drawpoly.disabled = true 
+    drawsquare.disabled = true
 
     state.type = 'drawsquare' 
 }
@@ -197,6 +229,8 @@ canvas.onmouseup = (ev) => {
             state.type = 'none'
             state.payload = {}
             drawline.disabled = false
+            drawpoly.disabled = false 
+            drawsquare.disabled = false
         }
     } else if(state.type == 'drawsquare') {
         const len = square_size / 400
@@ -213,7 +247,56 @@ canvas.onmouseup = (ev) => {
         })
         state.type = 'none'
         state.payload = {}
+        drawline.disabled = false
+        drawpoly.disabled = false 
         drawsquare.disabled = false
+    } else if(state.type == 'drawpoly') {
+        if(state.payload.current == 0) {
+            console.log("heheyy")
+            listOfItems.push({
+                type: 'point',
+                coordinates: [
+                    coordinate.x, coordinate.y, 0.0, 0.0, 0.0,
+                ],
+                count: 1
+            })
+            state.payload.current++
+        } else if(state.payload.current == 1){
+
+            const la = listOfItems[listOfItems.length - 1]
+
+            la.type = 'line'
+            la.count++
+            la.coordinates.push(coordinate.x)
+            la.coordinates.push(coordinate.y)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+
+            listOfItems.pop()
+            listOfItems.push(la)
+
+            state.payload.current++
+        
+        }else{
+            console.log("lanjut")
+            const la = listOfItems[listOfItems.length - 1]
+
+            la.type = 'polygon'
+            la.count++
+            la.coordinates.push(coordinate.x)
+            la.coordinates.push(coordinate.y)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+
+            listOfItems.pop()
+            listOfItems.push(la)
+
+            state.payload.current
+
+        }
+    
     }else{
         console.log(listOfItems)
         // cek apakah berada di dalam suatu poligon

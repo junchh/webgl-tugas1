@@ -1,7 +1,15 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
 button{
     padding: 10px;
     background-color: #42a5f5;
     border-radius: 10px;
+}
+
+button:disabled {
+    background-color: #2d6fa5;
 }
 
 body{

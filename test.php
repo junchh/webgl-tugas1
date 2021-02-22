@@ -22,6 +22,9 @@
             <button class="pure-button" id="drawline">Draw Line</button>
         </div>
         <div class="feature">
+            <button class="pure-button" id="drawpoly">Draw Polygon</button>
+        </div>
+        <div class="feature">
             <input type="number" id="squaresize" name="squaresize" />
             <button class="pure-button" id="drawsquare">Draw Square</button>
         </div>
