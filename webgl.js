@@ -6,10 +6,12 @@ attribute vec2 vertPosition;
 attribute vec3 vertColor;
 varying vec3 fragColor;
 
+uniform mat4 u_scalingMatrix;
+
 void main()
 {
   fragColor = vertColor;
-  gl_Position = vec4(vertPosition, 0.0, 1.0);
+  gl_Position = u_scalingMatrix*vec4(vertPosition, 0.0, 1.0);
 }`
 
 var fragmentShaderText =
@@ -97,6 +99,7 @@ const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
+const scaling = document.getElementById("scaler");
 const save = document.getElementById("save")
 const uploadModel = document.getElementById("uploadModel")
 const saveChanges = document.getElementById("saveChanges");
@@ -205,6 +208,11 @@ colorpicker.onchange = () => {
     render(gl, listOfItems)
 }
 
+scaling.oninput = () => {
+    if (scaling.value >= 1){
+        main();
+    }
+}
 uploadModel.onchange = (e) => {
     console.log(e.target.files[0]);
     loadJSON(e.target.files[0].name, (json) => {
@@ -366,7 +374,7 @@ canvas.onmouseup = (ev) => {
 
 
 var main = function () {
-
+    window.alert("aaaa");
 	if (!gl) {
 		console.log('WebGL not supported, falling back on experimental-webgl')
 		gl = canvas.getContext('experimental-webgl')
@@ -442,6 +450,19 @@ var main = function () {
 
 
 	gl.useProgram(program)
+
+    // Scaling
+    Sx = document.getElementById("scaler").value;
+    Sy = document.getElementById("scaler").value;
+    Sz = 1.0;
+    var scalingMatrix = new Float32Array([
+        Sx, 0.0, 0.0, 0.0,
+        0.0, Sy, 0.0, 0.0,
+        0.0, 0.0, Sz, 0.0,
+        0.0, 0.0, 0.0, 1.0
+        ]);
+    var scaledMatrix = gl.getUniformLocation(program, 'u_scalingMatrix');
+    gl.uniformMatrix4fv(scaledMatrix, false, scalingMatrix);
 
     render(gl, listOfItems)
 
