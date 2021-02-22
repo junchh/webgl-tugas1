@@ -142,13 +142,23 @@ squaresize.onchange = (ev) => {
 }
 
 drawline.onclick = () => {
-    drawline.disabled = true
-    drawpoly.disabled = true 
-    drawsquare.disabled = true
+    if(state.type == 'none') {
+        drawline.innerHTML = "Stop Drawing Line"
+        drawpoly.disabled = true 
+        drawsquare.disabled = true
 
-    state.type = 'drawline'
+        state.type = 'drawline'
 
-    state.payload = {current: 0, pivot: {}}
+        state.payload = {current: 0, pivot: {}}
+    } else if(state.type == 'drawline') {
+        drawline.innerHTML = "Draw Line"
+        drawpoly.disabled = false
+        drawpolysquare.disabled = false 
+
+        state.type = 'none' 
+
+        state.payload = {}
+    }
 }
 
 drawpoly.onclick = () => {
@@ -208,6 +218,7 @@ canvas.onmouseup = (ev) => {
 
     if(state.type == 'drawline') {
         if(state.payload.current == 0) {
+
             listOfItems.push({
                 type: 'point',
                 coordinates: [
@@ -228,7 +239,7 @@ canvas.onmouseup = (ev) => {
             })
             state.type = 'none'
             state.payload = {}
-            drawline.disabled = false
+            drawline.innerHTML = "Draw Line"
             drawpoly.disabled = false 
             drawsquare.disabled = false
         }
