@@ -81,15 +81,7 @@ const render = (gl, objects) => {
     }
 }
 
-const transformClick = (ev) => {
-    let nowX = ev.clientX 
-    let nowY = ev.clientY
 
-    nowX = (nowX - 360) / 360
-    nowY = (-1 * (nowY - 360)) / 360 
-    
-    return {x: nowX, y: nowY}
-}
 
 let square_size = 0
 
@@ -101,29 +93,100 @@ const canvas = document.getElementById('c')
 const gl = canvas.getContext('webgl')
 
 const drawline = document.getElementById("drawline")
+const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
 const save = document.getElementById("save")
+const uploadModel = document.getElementById("uploadModel")
+const saveChanges = document.getElementById("saveChanges");
+const inputName = document.getElementById("inputName");
+
+const transformClick = (ev) => {
+    let nowX = ev.clientX 
+    let nowY = ev.clientY
+
+    const canvasW = canvas.width 
+    const canvasH = canvas.height
+
+    nowX = (nowX - (canvasW / 2)) / (canvasW / 2)
+    nowY = (-1 * (nowY - (canvasH / 2))) / (canvasH / 2)
+    
+    return {x: nowX, y: nowY}
+}
 
 save.onclick = () => {
-    saveModel(listOfItems)
+    save.classList.add('hide');
+    saveChanges.classList.remove('hide');
+    inputName.classList.remove('hide');
+    // saveModel(listOfItems);
 }
+
+saveChanges.onclick = () => {
+    save.classList.remove('hide');
+    saveChanges.classList.add('hide');
+    inputName.classList.add('hide');
+
+    var name = "model";
+    if(inputName.value !== ''){
+        console.log('override');
+        name = inputName.value;
+        inputName.value = "";
+    }
+    saveModel(name, listOfItems);
+}
+
 
 squaresize.onchange = (ev) => {
     square_size = ev.target.value
 }
 
 drawline.onclick = () => {
-    drawline.disabled = true
+    if(state.type == 'none') {
+        drawline.innerHTML = "Stop Drawing Line"
+        drawpoly.disabled = true 
+        drawsquare.disabled = true
 
-    state.type = 'drawline'
+        state.type = 'drawline'
 
-    state.payload = {current: 0, pivot: {}}
+        state.payload = {current: 0, pivot: {}}
+    } else if(state.type == 'drawline') {
+        drawline.innerHTML = "Draw Line"
+        drawpoly.disabled = false
+        drawpolysquare.disabled = false 
+
+        state.type = 'none' 
+
+        state.payload = {}
+    }
+}
+
+drawpoly.onclick = () => {
+    if(state.type == 'none') {
+        drawline.disabled = true
+        drawsquare.disabled = true
+        state.type = 'drawpoly'
+
+        state.payload = {current: 0}
+
+        drawpoly.innerHTML = "Stop Drawing Polygon"
+    } else if(state.type == 'drawpoly') {
+        drawpoly.innerHTML = "Draw Polygon"
+
+        drawline.disabled = false
+        drawsquare.disabled = false
+
+        state.type = 'none'
+        state.payload = {}
+    }
+    
+
 }
 
 drawsquare.onclick = () => {
-    drawsquare.disabled = true 
+    drawline.disabled = true
+    drawpoly.disabled = true 
+    drawsquare.disabled = true
 
     state.type = 'drawsquare' 
 }
@@ -142,11 +205,20 @@ colorpicker.onchange = () => {
     render(gl, listOfItems)
 }
 
+uploadModel.onchange = (e) => {
+    console.log(e.target.files[0]);
+    loadJSON(e.target.files[0].name, (json) => {
+        listOfItems = json;
+        render(gl, listOfItems);
+    })
+}
+
 canvas.onmouseup = (ev) => {
     const coordinate = transformClick(ev) 
 
     if(state.type == 'drawline') {
         if(state.payload.current == 0) {
+
             listOfItems.push({
                 type: 'point',
                 coordinates: [
@@ -167,7 +239,9 @@ canvas.onmouseup = (ev) => {
             })
             state.type = 'none'
             state.payload = {}
-            drawline.disabled = false
+            drawline.innerHTML = "Draw Line"
+            drawpoly.disabled = false 
+            drawsquare.disabled = false
         }
     } else if(state.type == 'drawsquare') {
         const len = square_size / 400
@@ -184,7 +258,56 @@ canvas.onmouseup = (ev) => {
         })
         state.type = 'none'
         state.payload = {}
+        drawline.disabled = false
+        drawpoly.disabled = false 
         drawsquare.disabled = false
+    } else if(state.type == 'drawpoly') {
+        if(state.payload.current == 0) {
+            console.log("heheyy")
+            listOfItems.push({
+                type: 'point',
+                coordinates: [
+                    coordinate.x, coordinate.y, 0.0, 0.0, 0.0,
+                ],
+                count: 1
+            })
+            state.payload.current++
+        } else if(state.payload.current == 1){
+
+            const la = listOfItems[listOfItems.length - 1]
+
+            la.type = 'line'
+            la.count++
+            la.coordinates.push(coordinate.x)
+            la.coordinates.push(coordinate.y)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+
+            listOfItems.pop()
+            listOfItems.push(la)
+
+            state.payload.current++
+        
+        }else{
+            console.log("lanjut")
+            const la = listOfItems[listOfItems.length - 1]
+
+            la.type = 'polygon'
+            la.count++
+            la.coordinates.push(coordinate.x)
+            la.coordinates.push(coordinate.y)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+            la.coordinates.push(0.0)
+
+            listOfItems.pop()
+            listOfItems.push(la)
+
+            state.payload.current
+
+        }
+    
     }else{
         console.log(listOfItems)
         // cek apakah berada di dalam suatu poligon
@@ -197,12 +320,14 @@ canvas.onmouseup = (ev) => {
         var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
         listOfPolygons = listOfPolygons.map(item => {
             return {
+                type: item.type,
                 points: mapToPoint(item.coordinates, item.count),
                 index: item.index
             }
         })
         console.log(listOfPolygons)
         var anyInside = false;
+        var type = "";
         listOfPolygons.forEach(polygon => {
             console.log(polygon.index);
             if(isInside(polygon.points, coordinate)){
@@ -210,15 +335,25 @@ canvas.onmouseup = (ev) => {
                     clickedPolygonIndex = -1;
                 }else{
                     clickedPolygonIndex = polygon.index;
+                    type = polygon.type;
                 }
 
                 anyInside = true;
             }
         })
 
+        const objectClicked = document.getElementById('objectClicked');
+
         if(!anyInside){
             clickedPolygonIndex = -1;
         }
+
+        if(clickedPolygonIndex === -1){
+            objectClicked.innerHTML = "Clicked : -";
+        }else{
+            objectClicked.innerHTML = "Clicked : " + type + " " + clickedPolygonIndex;
+        }
+        
         console.log(clickedPolygonIndex);
         state.type = 'none'
 

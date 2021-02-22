@@ -109,14 +109,29 @@ function mapToPoint(polygon, count){
     return listOfPoint
 }
 
-function saveModel(items){
+function saveModel(name, items){
     console.log(items);
     var HTTP = new XMLHttpRequest();
     const url = "/server.php";
 
     var data = new FormData();
     data.append('items', JSON.stringify(items));
+    data.append('name', name);
 
     HTTP.open("POST", url, true);
     HTTP.send(data);
+}
+
+function loadJSON(filename, callback) {   
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', filename, true);
+    xobj.onreadystatechange = function () {
+        console.log('yes');
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            console.log('yuhuu');
+            callback(JSON.parse(xobj.responseText));
+        }
+    };
+    xobj.send(null);  
 }

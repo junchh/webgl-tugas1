@@ -1,0 +1,75 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+button{
+    padding: 10px;
+    background-color: #42a5f5;
+    border-radius: 10px;
+}
+
+button:disabled {
+    background-color: #2d6fa5;
+}
+
+.editing{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    size: 24px;
+}
+
+.feature{
+    margin-bottom: 20px;
+}
+
+.pure-button {
+    font-size: 100%;
+    padding: .5em 1em;
+    color: white;
+    border: transparent;
+    background-color: #0078e7;
+    text-decoration: none;
+    border-radius: 2px;
+    display: inline-block;
+    line-height: normal;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.hide{
+    display: none;
+}
+
+#objectClicked{
+    font-size: 30px;
+}
+
+.help {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.help-feature{
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.step{
+    margin-bottom: 5px;
+    max-width: 250px;
+}
+
+.step > span {
+    font-weight: bold;
+}
