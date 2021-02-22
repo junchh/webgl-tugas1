@@ -309,12 +309,14 @@ canvas.onmouseup = (ev) => {
         var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
         listOfPolygons = listOfPolygons.map(item => {
             return {
+                type: item.type,
                 points: mapToPoint(item.coordinates, item.count),
                 index: item.index
             }
         })
         console.log(listOfPolygons)
         var anyInside = false;
+        var type = "";
         listOfPolygons.forEach(polygon => {
             console.log(polygon.index);
             if(isInside(polygon.points, coordinate)){
@@ -322,15 +324,25 @@ canvas.onmouseup = (ev) => {
                     clickedPolygonIndex = -1;
                 }else{
                     clickedPolygonIndex = polygon.index;
+                    type = polygon.type;
                 }
 
                 anyInside = true;
             }
         })
 
+        const objectClicked = document.getElementById('objectClicked');
+
         if(!anyInside){
             clickedPolygonIndex = -1;
         }
+
+        if(clickedPolygonIndex === -1){
+            objectClicked.innerHTML = "Clicked : -";
+        }else{
+            objectClicked.innerHTML = "Clicked : " + type + " " + clickedPolygonIndex;
+        }
+        
         console.log(clickedPolygonIndex);
         state.type = 'none'
 

@@ -36,6 +36,9 @@
             <input class="hide" type="text" id="inputName" placeholder="file name" />
             <button id="saveChanges" class="pure-button hide">Save</button>
         </div>
+        <div>
+            <span id="objectClicked"> Clicked : -</span>
+        </div>
     </div>
     <script src="util.js"></script>
     <script src="webgl.js"></script>
