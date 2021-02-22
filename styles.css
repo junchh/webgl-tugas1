@@ -12,7 +12,7 @@ button:disabled {
     background-color: #2d6fa5;
 }
 
-body{
+.editing{
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     size: 24px;
@@ -52,4 +52,24 @@ body{
 
 #objectClicked{
     font-size: 30px;
+}
+
+.help {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.help-feature{
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.step{
+    margin-bottom: 5px;
+    max-width: 250px;
+}
+
+.step > span {
+    font-weight: bold;
 }
