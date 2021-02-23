@@ -374,7 +374,6 @@ canvas.onmouseup = (ev) => {
 
 
 var main = function () {
-    window.alert("aaaa");
 	if (!gl) {
 		console.log('WebGL not supported, falling back on experimental-webgl')
 		gl = canvas.getContext('experimental-webgl')
