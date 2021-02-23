@@ -24,7 +24,7 @@ void main()
   gl_FragColor = vec4(fragColor, 1.0);
 }`
 
-var clickedPolygonIndex = -1;
+var clickedIndex = -1;
 
 let listOfItems = [
     {
@@ -200,11 +200,15 @@ colorpicker.onchange = () => {
     var colorCode = colorpicker.value;
     var rgb = hexToRgb(colorpicker.value);
 
-    if(clickedPolygonIndex >= 0){
-        for(var i=0;i < listOfItems[clickedPolygonIndex].count; i++){
-            listOfItems[clickedPolygonIndex].coordinates[i*5 + 2] = rgb.r;
-            listOfItems[clickedPolygonIndex].coordinates[i*5 + 3] = rgb.g;
-            listOfItems[clickedPolygonIndex].coordinates[i*5 + 4] = rgb.b;
+    var usedCount = 2;
+    if(listOfItems[clickedIndex].count){
+        usedCount = listOfItems[clickedIndex].count;
+    }
+    if(clickedIndex >= 0){
+        for(var i=0;i < usedCount; i++){
+            listOfItems[clickedIndex].coordinates[i*5 + 2] = rgb.r;
+            listOfItems[clickedIndex].coordinates[i*5 + 3] = rgb.g;
+            listOfItems[clickedIndex].coordinates[i*5 + 4] = rgb.b;
         }
     }
     render(gl, listOfItems)
@@ -330,52 +334,55 @@ canvas.onmouseup = (ev) => {
         moveshapes.disabled = false
     
     } else {
+        var listOfLine = mapToPointFilter(listOfItems, 'line')
+        var anyInsideLine = false;
+        listOfLine.forEach(line => {
+            console.log(line.index)
+            if(isInsideLineWithTolerance(line.points[0], line.points[1], coordinate, 0.01)){
+                if(clickedIndex === line.index){
+                    clickedIndex = -1;
+                }else{
+                    clickedIndex = line.index;
+                    type = line.type;
+                }
+
+                anyInsideLine = true;
+            }
+        })
+
         console.log(listOfItems)
         // cek apakah berada di dalam suatu poligon
-        var modifiedItems = listOfItems.map((item, idx) => {
-            return {
-                ...item,
-                index: idx
-            }
-        })
-        var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
-        listOfPolygons = listOfPolygons.map(item => {
-            return {
-                type: item.type,
-                points: mapToPoint(item.coordinates, item.count),
-                index: item.index
-            }
-        })
+        var listOfPolygons = mapToPointFilter(listOfItems, 'polygon')
         console.log(listOfPolygons)
-        var anyInside = false;
+        var anyInsidePolygon = false;
         var type = "";
         listOfPolygons.forEach(polygon => {
             console.log(polygon.index);
             if(isInside(polygon.points, coordinate)){
-                if(clickedPolygonIndex === polygon.index){
-                    clickedPolygonIndex = -1;
+                if(clickedIndex === polygon.index){
+                    clickedIndex = -1;
                 }else{
-                    clickedPolygonIndex = polygon.index;
+                    clickedIndex = polygon.index;
                     type = polygon.type;
                 }
 
-                anyInside = true;
+                anyInsidePolygon = true;
             }
         })
 
         const objectClicked = document.getElementById('objectClicked');
 
-        if(!anyInside){
-            clickedPolygonIndex = -1;
+        if(!anyInsidePolygon && !anyInsideLine){
+            clickedIndex = -1;
         }
 
-        if(clickedPolygonIndex === -1){
+        if(clickedIndex === -1){
             objectClicked.innerHTML = "Clicked : -";
         }else{
-            objectClicked.innerHTML = "Clicked : " + type + " " + clickedPolygonIndex;
+            objectClicked.innerHTML = "Clicked : " + type + " " + clickedIndex;
         }
         
-        console.log(clickedPolygonIndex);
+        console.log(clickedIndex);
         state.type = 'none'
 
     }
@@ -406,10 +413,10 @@ canvas.onmousedown = (ev) => {
         listOfPolygons.forEach(polygon => {
             console.log(polygon.index);
             if(isInside(polygon.points, coordinate)){
-                if(clickedPolygonIndex === polygon.index){
-                    clickedPolygonIndex = -1;
+                if(clickedIndex === polygon.index){
+                    clickedIndex = -1;
                 }else{
-                    clickedPolygonIndex = polygon.index;
+                    clickedIndex = polygon.index;
                     type = polygon.type;
                 }
 
@@ -420,10 +427,10 @@ canvas.onmousedown = (ev) => {
         const objectClicked = document.getElementById('objectClicked');
 
         if(!anyInside){
-            clickedPolygonIndex = -1;
+            clickedIndex = -1;
         } else {
             console.log("dalammm")
-            state.payload = {id: clickedPolygonIndex}
+            state.payload = {id: clickedIndex}
             prevX = coordinate.x 
             prevY = coordinate.y
         }

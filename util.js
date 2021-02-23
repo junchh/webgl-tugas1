@@ -33,6 +33,33 @@ function pointOrientation(p, q, r)
     return (val > 0)? 1: 2; 
 } 
 
+function pointOrientationWithTolerance(p, q, r, error) 
+{ 
+    var val = (q.y - p.y) * (r.x - q.x) - 
+            (q.x - p.x) * (r.y - q.y); 
+ 
+    if (Math.abs(val) <= error){
+        return 0
+    }  
+    return (val > 0)? 1: 2; 
+} 
+
+function isInsideLineWithTolerance(p, q, r, error){
+    var deltaY1 = (p.y - q.y);
+    var deltaX1 = (p.x - q.x);
+
+    var deltaY2 = (p.y - r.y);
+    var deltaX2 = (p.x - r.x);
+
+    var value = deltaY1 * deltaX2 - deltaY2 * deltaX1;
+
+    if(Math.abs(value) <= error){
+        return true;
+    }
+
+    return false;
+}
+
 function doIntersect(p1, q1, p2, q2) 
 { 
     var o1 = pointOrientation(p1, q1, p2); 
@@ -107,6 +134,29 @@ function mapToPoint(polygon, count){
     }
 
     return listOfPoint
+}
+
+function mapToPointFilter(listOfItems, filter){
+    var usedCount = 2;
+    var modifiedItems = listOfItems.map((item, idx) => {
+        return {
+            ...item,
+            index: idx
+        }
+    })
+    var listOfFilter = modifiedItems.filter(item => item.type === filter)
+    listOfFilter = listOfFilter.map(item => {
+        if(item.count){
+            usedCount = item.count;
+        }
+        return {
+            type: item.type,
+            points: mapToPoint(item.coordinates, usedCount),
+            index: item.index
+        }
+    })
+
+    return listOfFilter
 }
 
 function saveModel(name, items){
