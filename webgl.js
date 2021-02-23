@@ -209,7 +209,7 @@ colorpicker.onchange = () => {
 }
 
 scaling.oninput = () => {
-    if (scaling.value >= 1){
+    if (scaling.value >= 0){
         main();
     }
 }
