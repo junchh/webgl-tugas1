@@ -86,6 +86,8 @@ const render = (gl, objects) => {
 
 
 let square_size = 0
+let prevX = 0
+let prevY = 0
 
 const state = {
     type: 'none',
@@ -93,7 +95,7 @@ const state = {
 }
 const canvas = document.getElementById('c')
 const gl = canvas.getContext('webgl')
-
+const moveshapes = document.getElementById("moveshapes")
 const drawline = document.getElementById("drawline")
 const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
@@ -156,7 +158,7 @@ drawline.onclick = () => {
     } else if(state.type == 'drawline') {
         drawline.innerHTML = "Draw Line"
         drawpoly.disabled = false
-        drawpolysquare.disabled = false 
+        drawsquare.disabled = false 
 
         state.type = 'none' 
 
@@ -233,9 +235,10 @@ canvas.onmouseup = (ev) => {
                     coordinate.x, coordinate.y, 0.0, 0.0, 0.0
                 ]
             })
-            state.payload.current++
+            state.payload.current = 1
             state.payload.pivot = coordinate 
-        } else {
+        } else if(state.payload.current == 1){
+            console.log("hehehekokmasuk")
             listOfItems.pop()
             listOfItems.push({
                 type: 'line',
@@ -315,8 +318,18 @@ canvas.onmouseup = (ev) => {
             state.payload.current
 
         }
+
+    } else if(state.type == 'drag') {
+        state.type = 'none'
+        state.payload = {}
+
+        drawline.disabled = false
+        scaling.disabled = false 
+        drawpoly.disabled = false 
+        drawsquare.disabled = false
+        moveshapes.disabled = false
     
-    }else{
+    } else {
         console.log(listOfItems)
         // cek apakah berada di dalam suatu poligon
         var modifiedItems = listOfItems.map((item, idx) => {
@@ -368,6 +381,94 @@ canvas.onmouseup = (ev) => {
     }
 
     render(gl, listOfItems)
+}
+
+canvas.onmousedown = (ev) => {
+    const coordinate = transformClick(ev) 
+    if(state.type == 'drag') {
+        var modifiedItems = listOfItems.map((item, idx) => {
+            return {
+                ...item,
+                index: idx
+            }
+        })
+        var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
+        listOfPolygons = listOfPolygons.map(item => {
+            return {
+                type: item.type,
+                points: mapToPoint(item.coordinates, item.count),
+                index: item.index
+            }
+        })
+        console.log(listOfPolygons)
+        var anyInside = false;
+        var type = "";
+        listOfPolygons.forEach(polygon => {
+            console.log(polygon.index);
+            if(isInside(polygon.points, coordinate)){
+                if(clickedPolygonIndex === polygon.index){
+                    clickedPolygonIndex = -1;
+                }else{
+                    clickedPolygonIndex = polygon.index;
+                    type = polygon.type;
+                }
+
+                anyInside = true;
+            }
+        })
+
+        const objectClicked = document.getElementById('objectClicked');
+
+        if(!anyInside){
+            clickedPolygonIndex = -1;
+        } else {
+            console.log("dalammm")
+            state.payload = {id: clickedPolygonIndex}
+            prevX = coordinate.x 
+            prevY = coordinate.y
+        }
+    }
+}
+
+canvas.onmousemove = (ev) => {
+    if(state.type == 'drag') {
+        const coordinate = transformClick(ev) 
+
+        console.log("sekarang x: " + coordinate.x)
+        console.log("sekarang y: " + coordinate.y)
+
+        const poly = listOfItems[state.payload.id] 
+
+        for(let i = 0; i < 5 * poly.count; i++) {
+            if(i % 5 == 0) {
+                poly.coordinates[i] += coordinate.x - prevX
+            } else if(i % 5 == 1) {
+                poly.coordinates[i] += coordinate.y - prevY
+            }
+        }
+
+        listOfItems.pop()
+        listOfItems.push(poly) 
+
+        console.log("popop")
+        console.log(poly)
+
+        prevX = coordinate.x 
+        prevY = coordinate.y
+
+        render(gl, listOfItems)
+    }
+}
+
+moveshapes.onclick = (ev) => {
+    if(state.type == 'none') {
+        state.type = 'drag'
+        moveshapes.disabled = true
+        drawline.disabled = true 
+        drawpoly.disabled = true 
+        drawsquare.disabled = true 
+        scaling.disabled = true 
+    }
 }
 
 

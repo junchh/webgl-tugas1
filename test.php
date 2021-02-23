@@ -17,6 +17,9 @@
             </div>
             <div>
                 <div class="feature">
+                    <button class="pure-button" id="moveshapes">Move Shapes</button>
+                </div>
+                <div class="feature">
                     <input type="color" id="colorpicker" onchange="changeColor()" value="#ff0000" style="width:20%;">
                 </div>
                 <div class="feature">
