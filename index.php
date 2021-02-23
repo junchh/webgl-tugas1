@@ -46,9 +46,12 @@
                 <div>
                     <span id="objectClicked"> Clicked : -</span>
                 </div>
+                <div>
+                    <button class="pure-button" id="delete"> Delete Shape</span>
+                </div>
             </div>
         </div>
-        <div class="help">
+        <div class="help" id="help">
             <div>
                 <span class="help-feature">Draw Line</span>
                 <div class="step">
@@ -125,6 +128,27 @@
                 </div>
                 <div class="step">
                     <span>Catatan:</span> Secara default model akan di save dengan nama "model.json"
+                </div>
+            </div>
+            <div>
+                <span class="help-feature">Change Color</span>
+                <div class="step">
+                    1. Klik objek yang terdapat pada canvas.
+                </div>
+                <div class="step">
+                    2. Pilih warna pada color picker.
+                </div>
+                <div class="step">
+                    3. Tutup color picker, atau klik sembarang pada halaman website.
+                </div>
+            </div>
+            <div>
+                <span class="help-feature">Move Shape</span>
+                <div class="step">
+                    1. Klik button "Move Shape"
+                </div>
+                <div class="step">
+                    2. Klik dan drag objek yang ingin dipindahkan.
                 </div>
             </div>
         </div>

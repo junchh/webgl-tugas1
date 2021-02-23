@@ -106,6 +106,7 @@ const save = document.getElementById("save")
 const uploadModel = document.getElementById("uploadModel")
 const saveChanges = document.getElementById("saveChanges");
 const inputName = document.getElementById("inputName");
+const deleteShape = document.getElementById("delete");
 
 const transformClick = (ev) => {
     let nowX = ev.clientX 
@@ -118,6 +119,13 @@ const transformClick = (ev) => {
     nowY = (-1 * (nowY - (canvasH / 2))) / (canvasH / 2)
     
     return {x: nowX, y: nowY}
+}
+
+deleteShape.onclick = () => {
+    if(clickedIndex >= 0){
+        listOfItems.splice(clickedIndex, 1);
+        render(gl, listOfItems);
+    }
 }
 
 save.onclick = () => {
