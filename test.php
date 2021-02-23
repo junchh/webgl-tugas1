@@ -20,6 +20,9 @@
                     <input type="color" id="colorpicker" onchange="changeColor()" value="#ff0000" style="width:20%;">
                 </div>
                 <div class="feature">
+                    <input type="number" id="scaler" value=1 style="width:20%" min=0>
+                </div>
+                <div class="feature">
                     <button class="pure-button" id="drawline">Draw Line</button>
                 </div>
                 <div class="feature">
