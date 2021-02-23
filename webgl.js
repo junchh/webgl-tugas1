@@ -401,22 +401,27 @@ canvas.onmouseup = (ev) => {
 canvas.onmousedown = (ev) => {
     const coordinate = transformClick(ev) 
     if(state.type == 'drag') {
-        var modifiedItems = listOfItems.map((item, idx) => {
-            return {
-                ...item,
-                index: idx
+        var listOfLine = mapToPointFilter(listOfItems, 'line')
+        var anyInsideLine = false;
+        listOfLine.forEach(line => {
+            console.log(line.index)
+            if(isInsideLineWithTolerance(line.points[0], line.points[1], coordinate, 0.01)){
+                if(clickedIndex === line.index){
+                    clickedIndex = -1;
+                }else{
+                    clickedIndex = line.index;
+                    type = line.type;
+                }
+
+                anyInsideLine = true;
             }
         })
-        var listOfPolygons = modifiedItems.filter(item => item.type === 'polygon')
-        listOfPolygons = listOfPolygons.map(item => {
-            return {
-                type: item.type,
-                points: mapToPoint(item.coordinates, item.count),
-                index: item.index
-            }
-        })
+
+        console.log(listOfItems)
+        // cek apakah berada di dalam suatu poligon
+        var listOfPolygons = mapToPointFilter(listOfItems, 'polygon')
         console.log(listOfPolygons)
-        var anyInside = false;
+        var anyInsidePolygon = false;
         var type = "";
         listOfPolygons.forEach(polygon => {
             console.log(polygon.index);
@@ -428,17 +433,19 @@ canvas.onmousedown = (ev) => {
                     type = polygon.type;
                 }
 
-                anyInside = true;
+                anyInsidePolygon = true;
             }
         })
 
         const objectClicked = document.getElementById('objectClicked');
 
-        if(!anyInside){
+        if(!anyInsidePolygon && !anyInsideLine){
             clickedIndex = -1;
         } else {
             console.log("dalammm")
             state.payload = {id: clickedIndex}
+            console.log("garis ini ")
+            console.log(clickedIndex)
             prevX = coordinate.x 
             prevY = coordinate.y
         }
@@ -454,16 +461,25 @@ canvas.onmousemove = (ev) => {
 
         const poly = listOfItems[state.payload.id] 
 
-        for(let i = 0; i < 5 * poly.count; i++) {
-            if(i % 5 == 0) {
-                poly.coordinates[i] += coordinate.x - prevX
-            } else if(i % 5 == 1) {
-                poly.coordinates[i] += coordinate.y - prevY
+        if(poly.type == 'polygon') {
+            for(let i = 0; i < 5 * poly.count; i++) {
+                if(i % 5 == 0) {
+                    poly.coordinates[i] += coordinate.x - prevX
+                } else if(i % 5 == 1) {
+                    poly.coordinates[i] += coordinate.y - prevY
+                }
+            }
+        } else {
+            for(let i = 0; i < 5 * 2; i++) {
+                if(i % 5 == 0) {
+                    poly.coordinates[i] += coordinate.x - prevX
+                } else if(i % 5 == 1) {
+                    poly.coordinates[i] += coordinate.y - prevY
+                }
             }
         }
 
-        listOfItems.pop()
-        listOfItems.push(poly) 
+        listOfItems[state.payload.id] = poly
 
         console.log("popop")
         console.log(poly)
