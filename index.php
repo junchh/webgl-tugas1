@@ -75,6 +75,18 @@
                 </div>
             </div>
             <div>
+                <span class="help-feature">Change Line</span>
+                <div class="step">
+                    1. Isi ukuran untuk line yang baru.
+                </div>
+                <div class="step">
+                    2. Klik line yang ingin diubah.
+                </div>
+                <div class="step">
+                    3. klik change line.
+                </div>
+            </div>
+            <div>
                 <span class="help-feature">Draw Polygon</span>
                 <div class="step">
                     1. Klik button "Draw Polygon"
