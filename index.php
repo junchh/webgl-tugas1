@@ -29,6 +29,10 @@
                     <button class="pure-button" id="drawline">Draw Line</button>
                 </div>
                 <div class="feature">
+                    <input type="number" id="linesize" name="linesize" />
+                    <button class="pure-button" id="changeline">Change Line</button>
+                </div>
+                <div class="feature">
                     <button class="pure-button" id="drawpoly">Draw Polygon</button>
                 </div>
                 <div class="feature">

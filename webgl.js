@@ -86,6 +86,7 @@ const render = (gl, objects) => {
 
 
 let square_size = 0
+let line_size = 0
 let prevX = 0
 let prevY = 0
 
@@ -97,6 +98,8 @@ const canvas = document.getElementById('c')
 const gl = canvas.getContext('webgl')
 const moveshapes = document.getElementById("moveshapes")
 const drawline = document.getElementById("drawline")
+const linesize = document.getElementById("linesize")
+const changeline = document.getElementById("changeline")
 const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
 const changesquare = document.getElementById("changesquare")
@@ -155,6 +158,10 @@ squaresize.onchange = (ev) => {
     square_size = ev.target.value
 }
 
+linesize.onchange = (ev) => {
+    line_size = ev.target.value
+}
+
 drawline.onclick = () => {
     if(state.type == 'none') {
         drawline.innerHTML = "Stop Drawing Line"
@@ -162,6 +169,7 @@ drawline.onclick = () => {
         drawsquare.disabled = true
         deleteShape.disabled = true 
         changesquare.disabled = true
+        changeline.disabled = true
 
         state.type = 'drawline'
 
@@ -172,6 +180,7 @@ drawline.onclick = () => {
         drawsquare.disabled = false 
         deleteShape.disabled = false
         changesquare.disabled = false
+        changeline.disabled = false 
 
         state.type = 'none' 
 
@@ -185,6 +194,7 @@ drawpoly.onclick = () => {
         drawsquare.disabled = true
         deleteShape.disabled = true 
         changesquare.disabled = true
+        changeline.disabled = true
         state.type = 'drawpoly'
 
         state.payload = {current: 0}
@@ -197,6 +207,7 @@ drawpoly.onclick = () => {
         drawsquare.disabled = false
         deleteShape.disabled = false
         changesquare.disabled = false
+        changeline.disabled = false
 
         state.type = 'none'
         state.payload = {}
@@ -211,6 +222,7 @@ drawsquare.onclick = () => {
     drawsquare.disabled = true
     deleteShape.disabled = true 
     changesquare.disabled = true
+    changeline.disabled = true
 
     state.type = 'drawsquare' 
 }
@@ -231,6 +243,23 @@ changesquare.onclick = () => {
             poly.coordinates[10] = xawal + lenx 
             poly.coordinates[11] = yawal - leny 
             poly.coordinates[16] = yawal - leny
+
+            listOfItems[clickedIndex] = poly 
+
+            render(gl, listOfItems)
+        }
+    }
+}
+
+changeline.onclick = () => {
+    if(clickedIndex != -1) {
+        const poly = listOfItems[clickedIndex] 
+        if(poly.type == 'line') {
+            const xawal = poly.coordinates[0]
+            const yawal = poly.coordinates[1] 
+
+            poly.coordinates[5] += (line_size - 1) * (poly.coordinates[5] - poly.coordinates[0])
+            poly.coordinates[6] += (line_size - 1) * (poly.coordinates[6] - poly.coordinates[1])
 
             listOfItems[clickedIndex] = poly 
 
@@ -302,6 +331,7 @@ canvas.onmouseup = (ev) => {
             drawsquare.disabled = false
             deleteShape.disabled = false
             changesquare.disabled = false
+            changeline.disabled = false
         }
     } else if(state.type == 'drawsquare') {
 
@@ -328,6 +358,7 @@ canvas.onmouseup = (ev) => {
         drawsquare.disabled = false
         deleteShape.disabled = false 
         changesquare.disabled = false
+        changeline.disabled = false
     } else if(state.type == 'drawpoly') {
         if(state.payload.current == 0) {
             console.log("heheyy")
@@ -386,6 +417,7 @@ canvas.onmouseup = (ev) => {
         moveshapes.disabled = false
         deleteShape.disabled = false
         changesquare.disabled = false
+        changeline.disabled = false
     
     } else {
         var listOfLine = mapToPointFilter(listOfItems, 'line')
@@ -547,6 +579,7 @@ moveshapes.onclick = (ev) => {
         scaling.disabled = true 
         deleteShape.disabled = true 
         changesquare.disabled = true
+        changeline.disabled = true
     }
 }
 
