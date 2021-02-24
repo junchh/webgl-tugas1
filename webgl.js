@@ -99,6 +99,7 @@ const moveshapes = document.getElementById("moveshapes")
 const drawline = document.getElementById("drawline")
 const drawpoly = document.getElementById("drawpoly")
 const drawsquare = document.getElementById("drawsquare")
+const changesquare = document.getElementById("changesquare")
 const squaresize = document.getElementById("squaresize")
 const colorpicker = document.getElementById("colorpicker")
 const scaling = document.getElementById("scaler");
@@ -204,6 +205,30 @@ drawsquare.onclick = () => {
     state.type = 'drawsquare' 
 }
 
+changesquare.onclick = () => {
+    if(clickedIndex != -1) {
+        const poly = listOfItems[clickedIndex] 
+        if(poly.type == 'polygon' && poly.count == 4) {
+            const canvasW = canvas.width / 2
+            const canvasH = canvas.height / 2
+
+            const lenx = square_size / canvasW
+            const leny = square_size / canvasH
+            const xawal = poly.coordinates[0]
+            const yawal = poly.coordinates[1] 
+
+            poly.coordinates[5] = xawal + lenx 
+            poly.coordinates[10] = xawal + lenx 
+            poly.coordinates[11] = yawal - leny 
+            poly.coordinates[16] = yawal - leny
+
+            listOfItems[clickedIndex] = poly 
+
+            render(gl, listOfItems)
+        }
+    }
+}
+
 colorpicker.onchange = () => {
     var colorCode = colorpicker.value;
     var rgb = hexToRgb(colorpicker.value);
@@ -267,14 +292,19 @@ canvas.onmouseup = (ev) => {
             drawsquare.disabled = false
         }
     } else if(state.type == 'drawsquare') {
-        const len = square_size / 400
+
+        const canvasW = canvas.width / 2
+        const canvasH = canvas.height / 2
+
+        const lenx = square_size / canvasW
+        const leny = square_size / canvasH
         listOfItems.push({
             type: 'polygon',
             coordinates: [
                 coordinate.x, coordinate.y, 0.0, 0.0, 0.0,
-                coordinate.x + len, coordinate.y, 0.0, 0.0, 0.0,
-                coordinate.x + len, coordinate.y - len, 0.0, 0.0, 0.0,
-                coordinate.x, coordinate.y - len, 0.0, 0.0, 0.0
+                coordinate.x + lenx, coordinate.y, 0.0, 0.0, 0.0,
+                coordinate.x + lenx, coordinate.y - leny, 0.0, 0.0, 0.0,
+                coordinate.x, coordinate.y - leny, 0.0, 0.0, 0.0
             ],
             count: 4
 

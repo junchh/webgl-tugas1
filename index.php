@@ -36,6 +36,9 @@
                     <button class="pure-button" id="drawsquare">Draw Square</button>
                 </div>
                 <div class="feature">
+                    <button class="pure-button" id="changesquare">Change Square</button>
+                </div>
+                <div class="feature">
                     <input type="file" id="uploadModel"/>
                 </div>
                 <div class="feature">
