@@ -104,6 +104,18 @@
                 </div>
             </div>
             <div>
+                <span class="help-feature">Change Square</span>
+                <div class="step">
+                    1. Isi ukuran untuk square yang baru.
+                </div>
+                <div class="step">
+                    2. Klik square yang ingin diubah.
+                </div>
+                <div class="step">
+                    3. klik change square.
+                </div>
+            </div>
+            <div>
                 <span class="help-feature">Load Model</span>
                 <div class="step">
                     1. Siapkan file model dalam ekstensi ".json".

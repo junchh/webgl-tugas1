@@ -160,6 +160,8 @@ drawline.onclick = () => {
         drawline.innerHTML = "Stop Drawing Line"
         drawpoly.disabled = true 
         drawsquare.disabled = true
+        deleteShape.disabled = true 
+        changesquare.disabled = true
 
         state.type = 'drawline'
 
@@ -168,6 +170,8 @@ drawline.onclick = () => {
         drawline.innerHTML = "Draw Line"
         drawpoly.disabled = false
         drawsquare.disabled = false 
+        deleteShape.disabled = false
+        changesquare.disabled = false
 
         state.type = 'none' 
 
@@ -179,6 +183,8 @@ drawpoly.onclick = () => {
     if(state.type == 'none') {
         drawline.disabled = true
         drawsquare.disabled = true
+        deleteShape.disabled = true 
+        changesquare.disabled = true
         state.type = 'drawpoly'
 
         state.payload = {current: 0}
@@ -189,6 +195,8 @@ drawpoly.onclick = () => {
 
         drawline.disabled = false
         drawsquare.disabled = false
+        deleteShape.disabled = false
+        changesquare.disabled = false
 
         state.type = 'none'
         state.payload = {}
@@ -201,6 +209,8 @@ drawsquare.onclick = () => {
     drawline.disabled = true
     drawpoly.disabled = true 
     drawsquare.disabled = true
+    deleteShape.disabled = true 
+    changesquare.disabled = true
 
     state.type = 'drawsquare' 
 }
@@ -290,6 +300,8 @@ canvas.onmouseup = (ev) => {
             drawline.innerHTML = "Draw Line"
             drawpoly.disabled = false 
             drawsquare.disabled = false
+            deleteShape.disabled = false
+            changesquare.disabled = false
         }
     } else if(state.type == 'drawsquare') {
 
@@ -314,6 +326,8 @@ canvas.onmouseup = (ev) => {
         drawline.disabled = false
         drawpoly.disabled = false 
         drawsquare.disabled = false
+        deleteShape.disabled = false 
+        changesquare.disabled = false
     } else if(state.type == 'drawpoly') {
         if(state.payload.current == 0) {
             console.log("heheyy")
@@ -370,6 +384,8 @@ canvas.onmouseup = (ev) => {
         drawpoly.disabled = false 
         drawsquare.disabled = false
         moveshapes.disabled = false
+        deleteShape.disabled = false
+        changesquare.disabled = false
     
     } else {
         var listOfLine = mapToPointFilter(listOfItems, 'line')
@@ -529,6 +545,8 @@ moveshapes.onclick = (ev) => {
         drawpoly.disabled = true 
         drawsquare.disabled = true 
         scaling.disabled = true 
+        deleteShape.disabled = true 
+        changesquare.disabled = true
     }
 }
 
